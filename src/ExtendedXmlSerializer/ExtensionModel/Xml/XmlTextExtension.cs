@@ -1,28 +1,4 @@
-﻿// MIT License
-//
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-using ExtendedXmlSerializer.ContentModel;
-using ExtendedXmlSerializer.ContentModel.Content;
+﻿using ExtendedXmlSerializer.ContentModel.Content;
 using ExtendedXmlSerializer.ContentModel.Conversion;
 using ExtendedXmlSerializer.ContentModel.Format;
 using ExtendedXmlSerializer.ContentModel.Identification;
@@ -31,6 +7,7 @@ using ExtendedXmlSerializer.Core;
 using ExtendedXmlSerializer.Core.Sources;
 using ExtendedXmlSerializer.Core.Specifications;
 using ExtendedXmlSerializer.ReflectionModel;
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Immutable;
@@ -38,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 using ISerializers = ExtendedXmlSerializer.ContentModel.Content.ISerializers;
+// ReSharper disable TooManyDependencies
 
 namespace ExtendedXmlSerializer.ExtensionModel.Xml
 {
@@ -62,6 +40,7 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 			readonly IMemberSerializations _serialization;
 			readonly IContentMembers       _content;
 
+			[UsedImplicitly]
 			public MemberSerializations(IMemberSerializations serialization, IContentMembers members)
 				: this(Specifications.Instance, serialization, members) {}
 
@@ -141,15 +120,16 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 			readonly IIdentities                _identities;
 			readonly IMemberSerializers         _members;
 			readonly ISerializers               _serializers;
-			readonly ISerializer                _serializer;
+			readonly ContentModel.ISerializer                _serializer;
 			readonly ISpecification<MemberInfo> _content;
 
-			public MemberSerializers(ISerializer serializer, IIdentities identities, ISerializers serializers,
+			[UsedImplicitly]
+			public MemberSerializers(ContentModel.ISerializer serializer, IIdentities identities, ISerializers serializers,
 			                         IMemberSerializers members, IConverters converters, IContentMember member)
 				: this(IsDefinedSpecification<XmlTextAttribute>.Default, serializer, identities, serializers, members,
 				       converters, member) {}
 
-			public MemberSerializers(ISpecification<MemberInfo> content, ISerializer serializer, IIdentities identities,
+			public MemberSerializers(ISpecification<MemberInfo> content, ContentModel.ISerializer serializer, IIdentities identities,
 			                         ISerializers serializers, IMemberSerializers members, IConverters converters,
 			                         IContentMember member)
 			{
@@ -189,6 +169,7 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 
 		sealed class GenericList<T> : ILists
 		{
+			[UsedImplicitly]
 			public static GenericList<T> Instance { get; } = new GenericList<T>();
 
 			GenericList() {}
@@ -201,7 +182,7 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 		{
 			readonly static Generic<ILists> Lists = new Generic<ILists>(typeof(GenericList<>));
 
-			readonly ISerializer                            _serializer;
+			readonly ContentModel.ISerializer                            _serializer;
 			readonly ISerializers                           _serializers;
 			readonly IMemberSerializer                      _default;
 			readonly IMemberSerializer                      _item;
@@ -209,11 +190,11 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 			readonly IParameterizedSource<ArrayList, IList> _lists;
 			readonly TypeInfo                               _type;
 
-			public ListSerializer(ISerializer serializer, ISerializers serializers, IMemberSerializer @default,
+			public ListSerializer(ContentModel.ISerializer serializer, ISerializers serializers, IMemberSerializer @default,
 			                      IMemberSerializer item, IIdentity identity, TypeInfo type)
 				: this(serializer, serializers, @default, item, identity, Lists.Get(type)(), type) {}
 
-			public ListSerializer(ISerializer serializer, ISerializers serializers, IMemberSerializer @default,
+			public ListSerializer(ContentModel.ISerializer serializer, ISerializers serializers, IMemberSerializer @default,
 			                      IMemberSerializer item, IIdentity identity, ILists lists, TypeInfo type)
 			{
 				_serializer  = serializer;
@@ -280,6 +261,7 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 			readonly IInnerContentActivation  _activator;
 			readonly IContentMember           _member;
 
+			[UsedImplicitly]
 			public InnerContentActivation(IInnerContentActivation activator, IContentMember member)
 				: this(IsCollectionTypeSpecification.Default, activator, member) {}
 
@@ -389,6 +371,7 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 			readonly Func<MemberInfo, bool>   _specification;
 			readonly ITypeMembers             _members;
 
+			[UsedImplicitly]
 			public ContentMember(ITypeMembers members)
 				: this(IsCollectionTypeSpecification.Default, Specification, members) {}
 

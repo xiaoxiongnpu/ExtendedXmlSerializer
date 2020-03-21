@@ -1,41 +1,38 @@
-﻿// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-using ExtendedXmlSerializer.ContentModel.Reflection;
+﻿using ExtendedXmlSerializer.ContentModel.Reflection;
 using ExtendedXmlSerializer.Core;
-using ExtendedXmlSerializer.ExtensionModel.Content;
+using ExtendedXmlSerializer.Core.Specifications;
 using ExtendedXmlSerializer.ReflectionModel;
 using System.Collections.Immutable;
+using System.Reflection;
 
 namespace ExtendedXmlSerializer.ExtensionModel.Types
 {
+	/// <summary>
+	/// For extension authors, enables immutable arrays on a container.  This is a default extension used by
+	/// <see cref="DefaultExtensions"/>.
+	/// </summary>
+	/// <seealso cref="DefaultExtensions"/>
 	public sealed class ImmutableArrayExtension : ISerializerExtension
 	{
+		/// <summary>
+		/// The instance.
+		/// </summary>
 		public static ImmutableArrayExtension Default { get; } = new ImmutableArrayExtension();
-		ImmutableArrayExtension() {}
 
+		ImmutableArrayExtension() : this(new IsAssignableGenericSpecification(typeof(ImmutableArray<>))) {}
+
+		readonly ISpecification<TypeInfo> _specification;
+
+		/// <summary>
+		/// Creates a new instance.
+		/// </summary>
+		/// <param name="specification">The specification used to determine when to assign a serializer to a given type.</param>
+		public ImmutableArrayExtension(ISpecification<TypeInfo> specification) => _specification = specification;
+
+		/// <inheritdoc />
 		public IServiceRepository Get(IServiceRepository parameter)
-			=> parameter.DecorateContent<ImmutableArrays>(new IsAssignableGenericSpecification(typeof(ImmutableArray<>)))
+			=> parameter.DecorateContentsWith<ImmutableArrays>()
+			            .When(_specification)
 			            .Decorate<IGenericTypes, ImmutableArrayAwareGenericTypes>();
 
 		void ICommand<IServices>.Execute(IServices parameter) {}

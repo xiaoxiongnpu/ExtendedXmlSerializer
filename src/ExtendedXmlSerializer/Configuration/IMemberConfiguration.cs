@@ -1,35 +1,22 @@
-// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-using System.Reflection;
 using ExtendedXmlSerializer.Core.Sources;
+using System.Reflection;
 
 // ReSharper disable UnusedTypeParameter
 
 namespace ExtendedXmlSerializer.Configuration
 {
+	/// <summary>
+	/// Represents a strongly-typed member configuration.  This is the harness on which all configurations to a type's
+	/// member are applied.
+	/// </summary>
+	/// <typeparam name="T">The member's containing type.</typeparam>
+	/// <typeparam name="TMember">The value type of the member.</typeparam>
 	public interface IMemberConfiguration<T, TMember> : IMemberConfiguration, ITypeConfiguration<T> {}
 
+	/// <summary>
+	/// Represents a generalized member configuration.  This is the harness on which all configurations to a type's member
+	/// are applied.
+	/// </summary>
 	// ReSharper disable once PossibleInterfaceMemberAmbiguity
 	public interface IMemberConfiguration : ITypeConfiguration, ISource<MemberInfo> {}
 }

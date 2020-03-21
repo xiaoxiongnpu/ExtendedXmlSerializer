@@ -1,36 +1,30 @@
-// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 using ExtendedXmlSerializer.Core.Specifications;
 
 namespace ExtendedXmlSerializer.ContentModel.Members
 {
+	/// <summary>
+	/// Used during serialization and deserialization to get and set values, respectively.  Also used to determine if a
+	/// member should be emitted.
+	/// </summary>
 	public interface IMemberAccess : ISpecification<object>
 	{
+		/// <summary>
+		/// Used during writing to determine if the value should be emitted based on its containing instance value.
+		/// </summary>
 		ISpecification<object> Instance { get; }
 
+		/// <summary>
+		/// Gets the member value based on the provided instance.
+		/// </summary>
+		/// <param name="instance">The containing instance of the member.</param>
+		/// <returns></returns>
 		object Get(object instance);
 
+		/// <summary>
+		/// Assigns the provided value based on the provided containing instance.
+		/// </summary>
+		/// <param name="instance">The containing instance that contains the member.</param>
+		/// <param name="value">The value to assign the member.</param>
 		void Assign(object instance, object value);
 	}
 }

@@ -1,53 +1,46 @@
-﻿// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-using System.Collections.Generic;
-using System.Reflection;
-using ExtendedXmlSerializer.Configuration;
+﻿using ExtendedXmlSerializer.Configuration;
 using ExtendedXmlSerializer.ContentModel.Identification;
 using ExtendedXmlSerializer.ContentModel.Reflection;
-using ExtendedXmlSerializer.Core.Sources;
+using ExtendedXmlSerializer.Core;
 using ExtendedXmlSerializer.ExtensionModel.Xml;
 using ExtendedXmlSerializer.ReflectionModel;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace ExtendedXmlSerializer.ExtensionModel.Types
 {
+	/// <summary>
+	/// Default extension that tracks registrations for type names, as well as configuration of necessary components for
+	/// successful type name resolution.
+	/// </summary>
 	public sealed class TypeNamesExtension : ISerializerExtension
 	{
 		readonly static IDictionary<TypeInfo, string> Defaults = DefaultNames.Default;
 
 		readonly IDictionary<TypeInfo, string> _defaults;
 
+		/// <summary>
+		/// Creates a new instance.
+		/// </summary>
 		public TypeNamesExtension() : this(new Dictionary<TypeInfo, string>(), Defaults) {}
 
+		/// <summary>
+		/// Creates a new instance.
+		/// </summary>
+		/// <param name="names"></param>
+		/// <param name="defaults"></param>
 		public TypeNamesExtension(IDictionary<TypeInfo, string> names, IDictionary<TypeInfo, string> defaults)
 		{
 			Names     = names;
 			_defaults = defaults;
 		}
 
+		/// <summary>
+		/// The current store of name registrations.
+		/// </summary>
 		public IDictionary<TypeInfo, string> Names { get; }
 
+		/// <inheritdoc />
 		public IServiceRepository Get(IServiceRepository parameter)
 			=> parameter.RegisterInstance(_defaults)
 			            .Register<IAssemblyTypePartitions, AssemblyTypePartitions>()
@@ -65,6 +58,6 @@ namespace ExtendedXmlSerializer.ExtensionModel.Types
 			                                                                             .Or(new TypedTable<string
 			                                                                                 >(_defaults))));
 
-		public void Execute(IServices parameter) {}
+		void ICommand<IServices>.Execute(IServices parameter) {}
 	}
 }

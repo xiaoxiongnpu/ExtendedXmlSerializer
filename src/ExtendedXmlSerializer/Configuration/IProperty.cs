@@ -1,32 +1,19 @@
-// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 using ExtendedXmlSerializer.Core.Sources;
 
 namespace ExtendedXmlSerializer.Configuration
 {
+	/// <summary>
+	/// A general purpose (attached)
+	/// property object that stores information and can in turn be used and stored by components that use
+	/// it.  This is considered internal code and not to be used by external applications.
+	/// </summary>
+	/// <typeparam name="T">The property's value type.</typeparam>
 	public interface IProperty<T> : ISource<T>
 	{
+		/// <summary>
+		/// Used to assign a value for the property.
+		/// </summary>
+		/// <param name="value"></param>
 		void Assign(T value);
 	}
 }

@@ -1,40 +1,49 @@
-// MIT License
-//
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
+using ExtendedXmlSerializer.Core.Sources;
 using System;
 using System.Collections.Immutable;
 using System.Reflection;
-using ExtendedXmlSerializer.Core.Sources;
 
 namespace ExtendedXmlSerializer.ReflectionModel
 {
-	public interface IGeneric<out T> : IParameterizedSource<ImmutableArray<TypeInfo>, Func<T>> { }
+	/// <summary>
+	/// Provides a mechanism to dynamically access a generic singleton by away of typed parameter.
+	/// </summary>
+	/// <typeparam name="T">The singleton type.</typeparam>
+	public interface IGeneric<out T> : IParameterizedSource<ImmutableArray<TypeInfo>, Func<T>> {}
 
+	/// <summary>
+	/// Provides a mechanism to dynamically create generic objects by way of typed parameters.
+	/// </summary>
+	/// <typeparam name="T1">The first parameter type.</typeparam>
+	/// <typeparam name="T">The instantiated generic type instance.</typeparam>
 	public interface IGeneric<in T1, out T> : IParameterizedSource<ImmutableArray<TypeInfo>, Func<T1, T>> {}
 
+	/// <summary>
+	/// Provides a mechanism to dynamically create generic objects by way of typed parameters.
+	/// </summary>
+	/// <typeparam name="T1">The first parameter type.</typeparam>
+	/// <typeparam name="T2">The second parameter type.</typeparam>
+	/// <typeparam name="T">The instantiated generic type instance.</typeparam>
 	public interface IGeneric<in T1, in T2, out T> : IParameterizedSource<ImmutableArray<TypeInfo>, Func<T1, T2, T>> {}
 
-	public interface IGeneric<in T1, in T2, in T3, out T> : IParameterizedSource<ImmutableArray<TypeInfo>, Func<T1, T2, T3, T>> {}
+	/// <summary>
+	/// Provides a mechanism to dynamically create generic objects by way of typed parameters.
+	/// </summary>
+	/// <typeparam name="T1">The first parameter type.</typeparam>
+	/// <typeparam name="T2">The second parameter type.</typeparam>
+	/// <typeparam name="T3">The third parameter type.</typeparam>
+	/// <typeparam name="T">The instantiated generic type instance.</typeparam>
+	public interface IGeneric<in T1, in T2, in T3, out T>
+		: IParameterizedSource<ImmutableArray<TypeInfo>, Func<T1, T2, T3, T>> {}
 
-	public interface IGeneric<in T1, in T2, in T3, in T4, out T> : IParameterizedSource<ImmutableArray<TypeInfo>, Func<T1, T2, T3, T4, T>> { }
+	/// <summary>
+	/// Provides a mechanism to dynamically create generic objects by way of typed parameters.
+	/// </summary>
+	/// <typeparam name="T1">The first parameter type.</typeparam>
+	/// <typeparam name="T2">The second parameter type.</typeparam>
+	/// <typeparam name="T3">The third parameter type.</typeparam>
+	/// <typeparam name="T4">The fourth parameter type.</typeparam>
+	/// <typeparam name="T">The instantiated generic type instance.</typeparam>
+	public interface IGeneric<in T1, in T2, in T3, in T4, out T>
+		: IParameterizedSource<ImmutableArray<TypeInfo>, Func<T1, T2, T3, T4, T>> {}
 }

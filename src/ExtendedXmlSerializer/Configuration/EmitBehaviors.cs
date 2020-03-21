@@ -1,44 +1,54 @@
-// MIT License
-//
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 using ExtendedXmlSerializer.ContentModel.Members;
 using ExtendedXmlSerializer.ExtensionModel.Content.Members;
 using ExtendedXmlSerializer.ExtensionModel.Xml.Classic;
+using System;
 
 namespace ExtendedXmlSerializer.Configuration
 {
+	/// <summary>
+	/// A set of built-in, identified behaviors that configure how a serializer emits content when it serializes an object.
+	/// </summary>
 	public static class EmitBehaviors
 	{
+		/// <summary>
+		/// Ensures that content is always emitted, regardless of its value.
+		/// </summary>
 		public static IEmitBehavior Always { get; } =
 			new EmitBehavior(new AllowedSpecificationAlteration(AlwaysEmitMemberSpecification.Default));
 
-		public static IEmitBehavior NotDefault { get; } =
-			new EmitBehavior(new AllowedSpecificationAlteration(AllowAssignedValues.Default));
-
+		/// <summary>
+		/// Follows the classic serializer behavior for emitting content.  For classic serialization, the serializer always
+		/// emits the value when it is a <see cref="Enum"/>.  Otherwise, it emits if the value is assigned (non-null).
+		/// </summary>
 		public static IEmitBehavior Classic { get; } =
 			new EmitBehavior(new AddAlteration(ClassicAllowedMemberValues.Default));
 
+		/// <summary>
+		/// This configures the container to emit when the value is assigned.  That is, not null.
+		/// </summary>
+		public static IEmitBehavior WhenAssigned { get; } =
+			new EmitBehavior(new AllowedSpecificationAlteration(AllowAssignedValues.Default));
+
+		/// <summary>
+		/// This is a variant of the <see cref="WhenAssigned"/> behavior.  With this behavior, the serializer emits when the
+		/// value is different from the defined value in the class.  For instance, if you have a property `public bool
+		/// MyProperty {get; set} = true` and `MyProperty` is `false` upon serialization, then the content is emitted.
+		/// </summary>
+		public static IEmitBehavior WhenModified { get; } =
+			new EmitBehavior(new AddAlteration(AllowedAssignedInstanceValues.Default));
+
+		#region Obsolete
+
+		/// <exclude />
+		[Obsolete("This is considered deprecated and will be removed in a future release.  Use EmitBehaviors.WhenModified instead.")]
 		public static IEmitBehavior Assigned { get; } =
 			new EmitBehavior(new AddAlteration(AllowedAssignedInstanceValues.Default));
+
+		/// <exclude />
+		[Obsolete("This is considered deprecated and will be removed in a future release.  Use EmitBehaviors.WhenAssigned instead.")]
+		public static IEmitBehavior NotDefault { get; } =
+			new EmitBehavior(new AllowedSpecificationAlteration(AllowAssignedValues.Default));
+
+		#endregion
 	}
 }

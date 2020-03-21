@@ -1,49 +1,43 @@
-﻿// MIT License
-//
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-using ExtendedXmlSerializer.ContentModel;
+﻿using ExtendedXmlSerializer.ContentModel;
 using ExtendedXmlSerializer.ContentModel.Format;
+using ExtendedXmlSerializer.Core;
 using System;
 using System.Reflection;
 
 namespace ExtendedXmlSerializer.ExtensionModel
 {
+	/// <summary>
+	/// Configures a serializer so that if an exception occcurs during selection of a serializer for a given type, a
+	/// provided fallback serializer is selected instead.  By default the provided fallback serializer does nothing for
+	/// serializer and returns a null instance for deserialization.
+	/// </summary>
+	/// <seealso href="https://github.com/ExtendedXmlSerializer/home/issues/197"/>
 	public class FallbackSerializationExtension : ISerializerExtension
 	{
+		/// <summary>
+		/// The default instance.  By default the provided fallback serializer does nothing for
+		/// serializer and returns a null instance for deserialization.
+		/// </summary>
 		public static FallbackSerializationExtension Default { get; } = new FallbackSerializationExtension();
 
 		FallbackSerializationExtension() : this(EmptySerializer.Instance) {}
 
 		readonly IFallbackSerializer _fallback;
 
+		/// <summary>
+		/// Creates a new instance.
+		/// </summary>
+		/// <param name="fallback">The fallback serializer to use in case an exception is thrown during serialzer selection..
+		/// </param>
 		public FallbackSerializationExtension(IFallbackSerializer fallback) => _fallback = fallback;
 
+		/// <inheritdoc />
 		public IServiceRepository Get(IServiceRepository parameter)
 			=> parameter.RegisterInstance(_fallback)
 			            .Register<RuntimeSerialization>()
 			            .Decorate<IRuntimeSerialization, RuntimeSerialization>();
 
-		public void Execute(IServices parameter) {}
+		void ICommand<IServices>.Execute(IServices parameter) {}
 
 		sealed class RuntimeSerialization : IRuntimeSerialization
 		{
@@ -71,6 +65,9 @@ namespace ExtendedXmlSerializer.ExtensionModel
 			}
 		}
 
+		/// <summary>
+		/// Used to register a specific serializer with the container so that it is used for fall back serialization.
+		/// </summary>
 		public interface IFallbackSerializer : ISerializer {}
 
 		sealed class EmptySerializer : IFallbackSerializer

@@ -1,26 +1,3 @@
-// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 using ExtendedXmlSerializer.ContentModel.Content;
 using ExtendedXmlSerializer.ContentModel.Conversion;
 using ExtendedXmlSerializer.Core;
@@ -28,18 +5,32 @@ using ISerializers = ExtendedXmlSerializer.ContentModel.Content.ISerializers;
 
 namespace ExtendedXmlSerializer.ExtensionModel
 {
+	/// <summary>
+	/// Used to cache commonly used components that are selected during serialization.
+	/// </summary>
 	public sealed class CachingExtension : ISerializerExtension, ISortAware
 	{
+		/// <summary>
+		/// The default instance with a default sort of 10.
+		/// </summary>
 		public static CachingExtension Default { get; } = new CachingExtension();
+
 		CachingExtension() : this(10) {}
 
+		/// <summary>
+		/// Creates a new instance.
+		/// </summary>
+		/// <param name="sort">The instance sort value.</param>
 		public CachingExtension(int sort) => Sort = sort;
 
+		/// <inheritdoc />
 		public int Sort { get; }
 
-		public IServiceRepository Get(IServiceRepository parameter) => parameter.Decorate<IContents, CachedContents>()
-		                                                                        .Decorate<ISerializers, CachedSerializers>()
-		                                                                        .Decorate<IConverters, CachedConverters>();
+		/// <inheritdoc />
+		public IServiceRepository Get(IServiceRepository parameter)
+			=> parameter.Decorate<IContents, CachedContents>()
+			            .Decorate<ISerializers, CachedSerializers>()
+			            .Decorate<IConverters, CachedConverters>();
 
 		void ICommand<IServices>.Execute(IServices parameter) {}
 	}

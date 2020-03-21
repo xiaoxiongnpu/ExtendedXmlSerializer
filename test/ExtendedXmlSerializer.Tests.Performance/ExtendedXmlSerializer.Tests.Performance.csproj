@@ -1,27 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <Import Project="../dir.props" />
-
   <PropertyGroup>
     <TargetFrameworks>net462;netcoreapp2.1</TargetFrameworks>
     <AssemblyName>ExtendedXmlSerializer.Tests.Performance</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>ExtendedXmlSerializer.Tests.Performance</PackageId>
-    <!--<NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>-->
-    <!--<RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">1.0.4</RuntimeFrameworkVersion>-->
-    <!--<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>-->
+    <IsPackable>false</IsPackable>
+    <VersionPrefix>0.0.0.0</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ExtendedXmlSerializer\ExtendedXmlSerializer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.12" />
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Condition="'$(TargetFramework)' == 'net462'" Version="0.10.12" />
-    <PackageReference Include="ExtendedXmlSerializer.Legacy" Version="2.0.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.0" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Condition="'$(TargetFramework)' == 'net462'" Version="0.12.0" />
+    <PackageReference Include="ExtendedXmlSerializer.Legacy" Version="2.1.1" />
   </ItemGroup>
 
 </Project>

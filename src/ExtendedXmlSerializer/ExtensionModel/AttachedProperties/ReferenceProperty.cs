@@ -1,26 +1,3 @@
-// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 using ExtendedXmlSerializer.Core.Sources;
 using System;
 using System.Linq.Expressions;
@@ -28,10 +5,17 @@ using System.Runtime.CompilerServices;
 
 namespace ExtendedXmlSerializer.ExtensionModel.AttachedProperties
 {
+	/// <summary>
+	/// Represents a referenced-based attached property.
+	/// </summary>
+	/// <typeparam name="TType">The hosting type.</typeparam>
+	/// <typeparam name="TValue">The property's value.</typeparam>
 	public class ReferenceProperty<TType, TValue> : Property<TType, TValue> where TType : class where TValue : class
 	{
-		public ReferenceProperty(Expression<Func<IProperty>> source) : this(source, _ => default(TValue)) {}
+		/// <inheritdoc />
+		public ReferenceProperty(Expression<Func<IProperty>> source) : this(source, _ => default) {}
 
+		/// <inheritdoc />
 		public ReferenceProperty(Expression<Func<IProperty>> source,
 		                         ConditionalWeakTable<TType, TValue>.CreateValueCallback defaultValue)
 			: base(new ReferenceCache<TType, TValue>(defaultValue), source) {}

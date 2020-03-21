@@ -1,7 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <Import Project="../dir.props" />
-
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;net462</TargetFrameworks>
     <AssemblyName>ExtendedXmlSerializer.Samples</AssemblyName>
@@ -10,10 +7,12 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <IsPackable>false</IsPackable>
+    <VersionPrefix>0.0.0.0</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ExtendedXmlSerializer.Legacy" Version="2.0.0" />
+    <PackageReference Include="ExtendedXmlSerializer.Legacy" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>

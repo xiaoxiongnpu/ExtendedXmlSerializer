@@ -1,61 +1,54 @@
-﻿// MIT License
-//
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-using ExtendedXmlSerializer.ExtensionModel;
+﻿using ExtendedXmlSerializer.ExtensionModel;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace ExtendedXmlSerializer.Configuration
 {
+	/// <summary>
+	/// Root-level component that is used to create serializers.  The configuration container contains all the applied
+	/// configurations which are then applied when the <see cref="ContextBase.Create"/> is called, creating the fully
+	/// configured serializer. This is considered the entry component for ExtendedXmlSerializer and is used extensively for
+	/// configuration and resulting creation.
+	/// </summary>
 	public class ConfigurationContainer : ContextBase, IConfigurationContainer
 	{
 		readonly IRootContext _context;
 
+		/// <summary>
+		/// Creates a instance, using <see cref="DefaultExtensions.Default"/> as the set of extensions to use.
+		/// </summary>
 		public ConfigurationContainer() : this(DefaultExtensions.Default.ToArray()) {}
 
-		public ConfigurationContainer(params ISerializerExtension[] extensions) : this(new ExtensionCollection(extensions)) {}
+		/// <summary>
+		/// Creates a new instance with the provided set of extensions.
+		/// </summary>
+		/// <param name="extensions">The initial set of extensions to populate the container.</param>
+		public ConfigurationContainer(params ISerializerExtension[] extensions)
+			: this(new ExtensionCollection(extensions)) {}
 
+		/// <inheritdoc />
 		public ConfigurationContainer(IExtensionCollection extensions) : this(new RootContext(extensions)) {}
 
+		/// <inheritdoc />
 		public ConfigurationContainer(ITypeConfigurationContext parent) : base(parent) => _context = parent.Root;
 
+		/// <inheritdoc />
 		public ConfigurationContainer(IRootContext context) : base(context) => _context = context;
 
+		/// <inheritdoc />
 		public IConfigurationContainer Extend(ISerializerExtension extension)
 		{
-			var existing = _context.SingleOrDefault(extension.GetType()
-			                                                 .GetTypeInfo()
-			                                                 .IsInstanceOfType);
+			var existing = _context.SingleOrDefault(extension.GetType().IsInstanceOfType);
 			if (existing != null)
 			{
 				_context.Remove(existing);
 			}
-			_context.Add(extension);
-			return this;
+
+			return _context.Apply(extension).Return(this);
 		}
 
+		/// <inheritdoc />
 		public IEnumerator<ITypeConfiguration> GetEnumerator() => _context.Types.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

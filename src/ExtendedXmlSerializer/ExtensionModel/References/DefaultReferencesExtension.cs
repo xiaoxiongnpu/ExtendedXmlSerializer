@@ -1,26 +1,3 @@
-// MIT License
-//
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 using ExtendedXmlSerializer.Core;
 using ExtendedXmlSerializer.ReflectionModel;
 using System.Collections.Generic;
@@ -29,31 +6,56 @@ using System.Reflection;
 
 namespace ExtendedXmlSerializer.ExtensionModel.References
 {
+	/// <summary>
+	/// A default extension that provides basic support for circular reference detection, which by default throws when it
+	/// is encountered.
+	/// </summary>
 	public sealed class DefaultReferencesExtension : ISerializerExtension
 	{
-		public DefaultReferencesExtension() : this(new HashSet<TypeInfo> {Support<string>.Key}, new HashSet<TypeInfo>()) {}
+		/// <summary>
+		///  Creates a new instance with an empty blacklist.
+		/// </summary>
+		public DefaultReferencesExtension() : this(new HashSet<TypeInfo> {Support<string>.Metadata}) {}
 
-		public DefaultReferencesExtension(ICollection<TypeInfo> blacklist,
-		                                  ICollection<TypeInfo> whitelist)
+		/// <summary>
+		/// Creates a new instance with the specified blacklist and empty whitelist.
+		/// </summary>
+		/// <param name="blacklist">The list of prohibited types.</param>
+		public DefaultReferencesExtension(ICollection<TypeInfo> blacklist) : this(blacklist, new HashSet<TypeInfo>()) {}
+
+		/// <summary>
+		/// Creates a new instance with provided types.
+		/// </summary>
+		/// <param name="blacklist">The list of prohibited types.</param>
+		/// <param name="whitelist">The list of allowed types.</param>
+		public DefaultReferencesExtension(ICollection<TypeInfo> blacklist, ICollection<TypeInfo> whitelist)
 		{
 			Blacklist = blacklist;
 			Whitelist = whitelist;
 		}
 
+		/// <summary>
+		/// The current list of prohibited types.
+		/// </summary>
 		public ICollection<TypeInfo> Blacklist { get; }
+
+		/// <summary>
+		/// The current list of allowed types.
+		/// </summary>
 		public ICollection<TypeInfo> Whitelist { get; }
 
+		/// <inheritdoc />
 		public IServiceRepository Get(IServiceRepository parameter)
 		{
 			var policy = Whitelist.Any()
-				             ? (IReferencesPolicy) new WhitelistReferencesPolicy(Whitelist.ToArray())
+				             ? (IReferencesPolicy)new WhitelistReferencesPolicy(Whitelist.ToArray())
 				             : new BlacklistReferencesPolicy(Blacklist.ToArray());
 
 			return parameter.RegisterInstance(policy)
 			                .Register<ContainsStaticReferenceSpecification>()
 			                .Register<IStaticReferenceSpecification, ContainsStaticReferenceSpecification>()
 			                .Register<IReferences, References>()
-			                /*.Decorate(typeof(IContentWriters<>), typeof(ContentWriters<>))*/;
+				/*.Decorate(typeof(IContentWriters<>), typeof(ContentWriters<>))*/;
 		}
 
 		void ICommand<IServices>.Execute(IServices parameter) {}

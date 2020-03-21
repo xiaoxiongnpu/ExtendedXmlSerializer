@@ -1,31 +1,34 @@
-﻿// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+﻿using System;
 
 namespace ExtendedXmlSerializer.Core.Sources
 {
+	/// <summary>
+	/// Convenience class used for accessing internal components.
+	/// </summary>
+	public static class Self
+	{
+		/// <summary>
+		/// Returns an alteration that returns the instance that is passed to it.  Used for scenarios where a default value is
+		/// needed where the instance passed in is the instance to return.
+		/// </summary>
+		/// <typeparam name="T">The type to return.</typeparam>
+		/// <returns>An alteration that returns the instance that is passed into it.</returns>
+		public static IAlteration<T> Instance<T>() => Self<T>.Default;
+
+		/// <summary>
+		/// Returns a delegate that returns the instance that is passed to it.  Used for scenarios where a default value is
+		/// needed where the instance passed in is the instance to return.
+		/// </summary>
+		/// <typeparam name="T">The type to return.</typeparam>
+		/// <returns>A delegate that returns the instance that is passed into it.</returns>
+		public static Func<T, T> Of<T>() => Self<T>.Default.Get;
+	}
+
+
 	sealed class Self<T> : IAlteration<T>
 	{
 		public static Self<T> Default { get; } = new Self<T>();
+
 		Self() {}
 
 		public T Get(T parameter) => parameter;

@@ -1,44 +1,20 @@
-﻿// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-using System.Collections.Generic;
-using System.Reflection;
-using ExtendedXmlSerializer.ContentModel;
-using ExtendedXmlSerializer.ContentModel.Content;
+﻿using ExtendedXmlSerializer.ContentModel.Content;
 using ExtendedXmlSerializer.ContentModel.Format;
 using ExtendedXmlSerializer.ContentModel.Members;
 using ExtendedXmlSerializer.Core;
 using ExtendedXmlSerializer.Core.Sources;
 using ExtendedXmlSerializer.Core.Specifications;
 using ExtendedXmlSerializer.ReflectionModel;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace ExtendedXmlSerializer.ExtensionModel.Content
 {
-	public sealed class AllowedInstancesExtension
+	sealed class AllowedInstancesExtension
 		: TypedTable<ISpecification<object>>, ITypedSpecifications, ISerializerExtension
 	{
-		public AllowedInstancesExtension() :
-			base(new Dictionary<TypeInfo, ISpecification<object>>(ReflectionModel.Defaults.TypeComparer)) {}
+		public AllowedInstancesExtension()
+			: base(new Dictionary<TypeInfo, ISpecification<object>>(ReflectionModel.Defaults.TypeComparer)) {}
 
 		public IServiceRepository Get(IServiceRepository parameter)
 			=> parameter.RegisterInstance<ITypedSpecifications>(this)
@@ -58,7 +34,7 @@ namespace ExtendedXmlSerializer.ExtensionModel.Content
 				_serializers    = serializers;
 			}
 
-			public ISerializer Get(TypeInfo parameter)
+			public ContentModel.ISerializer Get(TypeInfo parameter)
 			{
 				var specification = _specifications.Get(parameter);
 				var serializer    = _serializers.Get(parameter);
@@ -82,7 +58,8 @@ namespace ExtendedXmlSerializer.ExtensionModel.Content
 			{
 				var specification = _specifications.Get(parameter.MemberType);
 				var access        = _accessors.Get(parameter);
-				var result        = specification != null ? new MemberAccess(specification.And(access), access) : access;
+				var result =
+					specification != null ? new MemberAccess(specification.And(access), access) : access;
 				return result;
 			}
 
@@ -110,12 +87,12 @@ namespace ExtendedXmlSerializer.ExtensionModel.Content
 			}
 		}
 
-		sealed class Serializer : ISerializer
+		sealed class Serializer : ContentModel.ISerializer
 		{
-			readonly ISpecification<object> _specification;
-			readonly ISerializer            _serializer;
+			readonly ISpecification<object>   _specification;
+			readonly ContentModel.ISerializer _serializer;
 
-			public Serializer(ISpecification<object> specification, ISerializer serializer)
+			public Serializer(ISpecification<object> specification, ContentModel.ISerializer serializer)
 			{
 				_specification = specification;
 				_serializer    = serializer;

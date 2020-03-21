@@ -1,47 +1,36 @@
-// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-using System.Text;
-using System.Xml;
 using ExtendedXmlSerializer.ContentModel.Collections;
 using ExtendedXmlSerializer.ContentModel.Content;
 using ExtendedXmlSerializer.ContentModel.Format;
 using ExtendedXmlSerializer.ContentModel.Identification;
 using ExtendedXmlSerializer.Core;
-using ExtendedXmlSerializer.Core.Specifications;
 using ExtendedXmlSerializer.ReflectionModel;
+using System.Text;
+using System.Xml;
 
 namespace ExtendedXmlSerializer.ExtensionModel.Xml
 {
+	/// <summary>
+	/// A default extension that is used to configure all necessary components for xml-specific serialization and
+	/// deserialization.
+	/// </summary>
 	public sealed class XmlSerializationExtension : ISerializerExtension
 	{
 		readonly XmlNameTable      _names;
 		readonly XmlReaderSettings _reader;
 		readonly XmlWriterSettings _writer;
 
+		/// <summary>
+		/// Creates a new instance.
+		/// </summary>
 		public XmlSerializationExtension()
 			: this(Defaults.ReaderSettings, Defaults.WriterSettings, new NameTable()) {}
 
+		/// <summary>
+		/// Creates a new instance.
+		/// </summary>
+		/// <param name="reader"></param>
+		/// <param name="writer"></param>
+		/// <param name="names"></param>
 		public XmlSerializationExtension(XmlReaderSettings reader, XmlWriterSettings writer, XmlNameTable names)
 		{
 			_reader = reader;
@@ -49,6 +38,7 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 			_names  = names;
 		}
 
+		/// <inheritdoc />
 		public IServiceRepository Get(IServiceRepository parameter)
 			=> parameter.RegisterInstance(Encoding.UTF8)
 			            .RegisterInstance(_names)
@@ -69,9 +59,9 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 					                                                                                             .Default)))
 			            .Register<IInnerContentActivation, XmlInnerContentActivation>()
 			            .Register<IFormatReaderContexts, FormatReaderContexts>()
-			            .Register<IFormatWriters<System.Xml.XmlWriter>, FormatWriters>()
+			            .Register<IFormatWriters, FormatWriters>()
 			            .Register<IXmlReaderFactory, XmlReaderFactory>()
-			            .Register<IFormatReaders<System.Xml.XmlReader>, FormatReaders>()
+			            .Register<IFormatReaders, FormatReaders>()
 			            .Register<IExtendedXmlSerializer, ExtendedXmlSerializer>();
 
 		void ICommand<IServices>.Execute(IServices parameter) {}

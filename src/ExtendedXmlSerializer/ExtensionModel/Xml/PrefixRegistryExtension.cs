@@ -1,27 +1,4 @@
-﻿// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-using ExtendedXmlSerializer.ContentModel.Format;
+﻿using ExtendedXmlSerializer.ContentModel.Format;
 using ExtendedXmlSerializer.ContentModel.Identification;
 using ExtendedXmlSerializer.ContentModel.Reflection;
 using ExtendedXmlSerializer.Core;
@@ -32,17 +9,26 @@ using System.Reflection;
 
 namespace ExtendedXmlSerializer.ExtensionModel.Xml
 {
+	/// <summary>
+	/// An extension used to customize prefix registration.
+	/// </summary>
+	/// <seealso href="https://github.com/ExtendedXmlSerializer/home/issues/199"/>
 	public sealed class PrefixRegistryExtension : ISerializerExtension
 	{
 		readonly IDictionary<Type, string> _registry;
 
+		/// <summary>
+		/// Creates a new instance.
+		/// </summary>
+		/// <param name="registry">The registry store.</param>
 		public PrefixRegistryExtension(IDictionary<Type, string> registry) => _registry = registry;
 
+		/// <inheritdoc />
 		public IServiceRepository Get(IServiceRepository parameter)
-			=> parameter.Decorate<IFormatWriters<System.Xml.XmlWriter>, FormatWriters>()
+			=> parameter.Decorate<IFormatWriters, FormatWriters>()
 			            .RegisterInstance<IPrefixRegistry>(new PrefixRegistry(_registry));
 
-		public void Execute(IServices parameter) {}
+		void ICommand<IServices>.Execute(IServices parameter) {}
 
 		interface IPrefixRegistry : IParameterizedSource<Type, string> {}
 
@@ -51,13 +37,13 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 			public PrefixRegistry(IDictionary<Type, string> store) : base(store) {}
 		}
 
-		sealed class FormatWriters : IFormatWriters<System.Xml.XmlWriter>
+		sealed class FormatWriters : IFormatWriters
 		{
 			readonly IPrefixRegistry                      _registry;
 			readonly ITypes                               _types;
-			readonly IFormatWriters<System.Xml.XmlWriter> _writers;
+			readonly IFormatWriters _writers;
 
-			public FormatWriters(IPrefixRegistry registry, ITypes types, IFormatWriters<System.Xml.XmlWriter> writers)
+			public FormatWriters(IPrefixRegistry registry, ITypes types, IFormatWriters writers)
 			{
 				_registry = registry;
 				_types    = types;
@@ -74,6 +60,7 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 				readonly IFormatWriter        _writer;
 				readonly System.Xml.XmlWriter _native;
 
+				// ReSharper disable once TooManyDependencies
 				public Writer(IPrefixRegistry registry, ITypes types, IFormatWriter writer, System.Xml.XmlWriter native)
 				{
 					_registry = registry;
@@ -122,9 +109,9 @@ namespace ExtendedXmlSerializer.ExtensionModel.Xml
 					_writer.EndCurrent();
 				}
 
-				public void Content(IIdentity property, string content)
+				public void Content(IIdentity identity, string content)
 				{
-					_writer.Content(property, content);
+					_writer.Content(identity, content);
 				}
 
 				public void Content(string content)

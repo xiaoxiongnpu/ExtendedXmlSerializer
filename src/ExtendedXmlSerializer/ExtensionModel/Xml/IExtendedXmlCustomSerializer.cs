@@ -1,41 +1,45 @@
-﻿// MIT License
-// 
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace ExtendedXmlSerializer.ExtensionModel.Xml
 {
+	/// <summary>
+	/// A strongly-typed v1 custom serializer.
+	/// </summary>
+	/// <typeparam name="T">The type to serialize.</typeparam>
 	public interface IExtendedXmlCustomSerializer<T>
 	{
+		/// <summary>
+		/// Deserializes the document subtree from the provided element into a new instance.
+		/// </summary>
+		/// <param name="xElement">The element subtree.</param>
+		/// <returns>An instance from the provided element subtree.</returns>
 		T Deserialize(XElement xElement);
 
+		/// <summary>
+		/// Serializes an instance.
+		/// </summary>
+		/// <param name="xmlWriter">The writer holding the destination document.</param>
+		/// <param name="obj">The instance to serialize.</param>
 		void Serializer(System.Xml.XmlWriter xmlWriter, T obj);
 	}
 
+	/// <summary>
+	/// The v1 custom serializer.
+	/// </summary>
 	public interface IExtendedXmlCustomSerializer
 	{
+		/// <summary>
+		/// Deserializes the document subtree from the provided element into a new instance.
+		/// </summary>
+		/// <param name="xElement">The element subtree.</param>
+		/// <returns>An instance from the provided element subtree.</returns>
 		object Deserialize(XElement xElement);
 
+		/// <summary>
+		/// Serializes an instance.
+		/// </summary>
+		/// <param name="xmlWriter">The writer holding the destination document.</param>
+		/// <param name="instance">The instance to serialize.</param>
 		void Serializer(System.Xml.XmlWriter xmlWriter, object instance);
 	}
 }

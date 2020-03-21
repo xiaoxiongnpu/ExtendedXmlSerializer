@@ -1,42 +1,39 @@
-// MIT License
-//
-// Copyright (c) 2016-2018 Wojciech Nagórski
-//                    Michael DeMond
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
 using ExtendedXmlSerializer.Core.Specifications;
 using ExtendedXmlSerializer.ReflectionModel;
 using System.Reflection;
 
 namespace ExtendedXmlSerializer.ContentModel.Conversion
 {
+	/// <summary>
+	/// Base converter used as a convenience for extension authors.
+	/// </summary>
+	/// <typeparam name="T">The type to convert.</typeparam>
 	public abstract class ConverterBase<T> : DecoratedSpecification<TypeInfo>, IConverter<T>
 	{
-		protected readonly static ISpecification<TypeInfo> Specification = TypeEqualitySpecification<T>.Default;
+		/// <summary>
+		/// Creates a new instance.
+		/// </summary>
+		protected ConverterBase() : this(TypeEqualitySpecification<T>.Default) {}
 
-		protected ConverterBase() : this(Specification) {}
-
+		/// <summary>
+		/// Creates a new instance.
+		/// </summary>
+		/// <param name="specification">The specification that determines whether the created converter handles the candidate
+		/// type.</param>
 		protected ConverterBase(ISpecification<TypeInfo> specification) : base(specification) {}
 
+		/// <summary>
+		/// Used to parse the provided text into a new instance of the converter type.
+		/// </summary>
+		/// <param name="data">The text from which to create a new instance.</param>
+		/// <returns>An instance created from the provided text.</returns>
 		public abstract T Parse(string data);
 
+		/// <summary>
+		/// Used to format the provided instance into its text representation.
+		/// </summary>
+		/// <param name="instance">The instance to convert into a text string.</param>
+		/// <returns>The string representation of the provided instance.</returns>
 		public abstract string Format(T instance);
 	}
 }
